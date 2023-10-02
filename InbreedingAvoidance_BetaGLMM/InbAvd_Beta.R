@@ -29,14 +29,19 @@ D[Actual==TRUE, .N, by=F.ImmiOrNatal] #By female natality status
 D[Actual==FALSE, .N, by=F.ImmiOrNatal] #By female natality status
 
 
+#Dummy code set up for natality:
+#Nat_I==0 & Nat_U==0 <-intercept=Natal females
+#Nat_I==1 & Nat_U==0 <-intercept+Nat_I = Immigrant females
+#Nat_I==0 & Nat_U==1 <-intercept+Nat_U = Unknown females
+
 dat=list(
-  rel=D$GeneticR+0.00001,
-  sire=ifelse(D$Actual==TRUE, 1, 0),
-  Nat_I=ifelse(D$F.ImmiOrNatal=="Immigrant",1,0),
-  Nat_U=ifelse(D$F.ImmiOrNatal=="Unknown",1,0),
-  ida_index=as.integer(as.factor(D$idA)),
-  idb_index=as.integer(as.factor(D$idB)),
-  off_id=as.integer(as.factor(D$Offspring))
+  rel=D$GeneticR+0.00001, #genetic relatedness estimates from exome-sequencing data
+  sire=ifelse(D$Actual==TRUE, 1, 0), #whether the male of the pair is the actual (1) or potential (0) sire of the offspring
+  Nat_I=ifelse(D$F.ImmiOrNatal=="Immigrant",1,0), #dummy variable. Is the female of the pair an immigrant
+  Nat_U=ifelse(D$F.ImmiOrNatal=="Unknown",1,0), #dummy variable. Does the female of the pair have unknown natality
+  ida_index=as.integer(as.factor(D$idA)), #index variable for individual varying effect
+  idb_index=as.integer(as.factor(D$idB)), #index variable for individual varying effect
+  off_id=as.integer(as.factor(D$Offspring)) #index variable for offspring of the mother in each pair
 )
 
 #If you do not want to fit the model, load it from this object file:
